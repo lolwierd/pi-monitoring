@@ -1,0 +1,29 @@
+version: '3.4'
+
+services:
+  node_exporter:
+    image: quay.io/prometheus/node-exporter
+    container_name: node_exporter
+    command:
+      - '--path.rootfs=/host'
+    network_mode: host
+    pid: host
+    restart: unless-stopped
+    volumes:
+      - '/:/host:ro,rslave'
+
+  prometheus:
+    image: prom/prometheus@sha256:c6c1d593f8a1a0958cbebd01d14ae3242e099f0b86e905b5d476e687f1ab3829
+    container_name: prometheus
+    restart: unless-stopped
+    volumes:
+      - /home/pi/monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - 9090:9090
+
+  grafana:
+    image: grafana/grafana@sha256:d880f0051439af19dd80bb713653f053a67b12d62d1f1032c7019bb07a96ced4
+    container_name: grafana
+    restart: unless-stopped
+    ports:
+      - 9003:3000
